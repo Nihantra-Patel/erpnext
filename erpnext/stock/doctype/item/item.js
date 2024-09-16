@@ -559,17 +559,23 @@ $.extend(erpnext.item, {
 						onchange: function () {
 							let selected_attributes = get_selected_attributes();
 							let lengths = [];
-							Object.keys(selected_attributes).map((key) => {
-								lengths.push(selected_attributes[key].length);
+
+							Object.keys(selected_attributes).forEach((key) => {
+								if (selected_attributes[key].length > 0) {
+									lengths.push(selected_attributes[key].length);
+								}
 							});
-							if (lengths.includes(0)) {
+
+							let has_selected_values = lengths.length > 0;
+						
+							if (!has_selected_values) {
 								me.multiple_variant_dialog.get_primary_btn().html(__("Create Variants"));
 								me.multiple_variant_dialog.disable_primary_action();
 							} else {
 								let no_of_combinations = lengths.reduce((a, b) => a * b, 1);
 								let msg;
 								if (no_of_combinations === 1) {
-									msg = __("Make {0} Variant", [no_of_combinations]);
+									msg = __("Make 1 Variant");
 								} else {
 									msg = __("Make {0} Variants", [no_of_combinations]);
 								}
