@@ -274,18 +274,26 @@ def generate_keyed_value_combinations(args):
 
 	To this:
 
-	        [
-	                {u'attr1': u'a', u'attr2': u'1', u'attr3': u'A'},
-	                {u'attr1': u'b', u'attr2': u'1', u'attr3': u'A'},
-	                {u'attr1': u'c', u'attr2': u'1', u'attr3': u'A'},
-	                {u'attr1': u'a', u'attr2': u'2', u'attr3': u'A'},
-	                {u'attr1': u'b', u'attr2': u'2', u'attr3': u'A'},
-	                {u'attr1': u'c', u'attr2': u'2', u'attr3': u'A'}
-	        ]
+			[
+					{u'attr1': u'a', u'attr2': u'1', u'attr3': u'A'},
+					{u'attr1': u'b', u'attr2': u'1', u'attr3': u'A'},
+					{u'attr1': u'c', u'attr2': u'1', u'attr3': u'A'},
+					{u'attr1': u'a', u'attr2': u'2', u'attr3': u'A'},
+					{u'attr1': u'b', u'attr2': u'2', u'attr3': u'A'},
+					{u'attr1': u'c', u'attr2': u'2', u'attr3': u'A'}
+			]
 
+	If one attribute is empty, combinations are still created for the other attributes.
 	"""
-	# Return empty list if empty
+	# Return empty list if no args
 	if not args:
+		return []
+
+	# Remove empty attribute lists from args
+	filtered_args = {key: values for key, values in args.items() if values}
+
+	# Return empty list if all attribute lists are empty
+	if not filtered_args:
 		return []
 
 	# Turn `args` into a list of lists of key-value tuples:
@@ -294,7 +302,7 @@ def generate_keyed_value_combinations(args):
 	# 	[(u'attr3', u'A')],
 	# 	[(u'attr1', u'a'), (u'attr1', u'b'), (u'attr1', u'c')]
 	# ]
-	key_value_lists = [[(key, val) for val in args[key]] for key in args.keys()]
+	key_value_lists = [[(key, val) for val in filtered_args[key]] for key in filtered_args.keys()]
 
 	# Store the first, but as objects
 	# [{u'attr2': u'1'}, {u'attr2': u'2'}]
@@ -316,7 +324,6 @@ def generate_keyed_value_combinations(args):
 		results = new_results
 
 	return results
-
 
 def copy_attributes_to_variant(item, variant):
 	# copy non no-copy fields
